@@ -6,12 +6,10 @@
 #         self.right = right
 class Solution:
     def searchBST(self, root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
-        global x
-        x = val
 
         def inOrder(head):
             if head:
-                if head.val == x:
+                if head.val == val:
                     return head
                 left = inOrder(head.left)
                 right = inOrder(head.right)
