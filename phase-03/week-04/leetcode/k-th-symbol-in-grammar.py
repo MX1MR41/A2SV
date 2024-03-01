@@ -2,8 +2,8 @@ class Solution:
     def kthGrammar(self, n: int, k: int) -> int:
         # this recursive generation of numbers has a pattern 
         # a given ith row will have its first half of numbers
-        # the same as the (i-1)th row's first half and 
-        # its second half will be the complement of the (i-1)th row's second half
+        # the same as the (i-1)th row and 
+        # its second half will be the complement of the (i-1)th row's 
         
         def gram(n, k):
             if n == 1:
