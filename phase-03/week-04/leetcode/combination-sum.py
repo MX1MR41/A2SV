@@ -5,8 +5,9 @@ class Solution:
         candidates.sort() # sorting helps to eliminate target-exceeding combinations earlier
 
         def dfs(curr, tot, start):
+
             if tot > target:
-                return 
+                return
             
             if tot == target:
                 res.add(tuple(curr[:]))
@@ -16,8 +17,6 @@ class Solution:
             # helps by pruning duplicate combinations
             for i in range(start, len(candidates)):
 
-                if tot + candidates[i] > target:
-                    break
 
                 curr.append(candidates[i])
                 dfs(curr, tot + candidates[i], i)  
