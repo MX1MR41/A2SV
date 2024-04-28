@@ -21,7 +21,7 @@ def main():
             W += temp[0]
             B += temp[1]
             RES = max(RES, temp[2])
-
+            
         if W == B: RES += 1
 
         return [W, B, RES]
