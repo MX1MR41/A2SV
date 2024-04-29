@@ -1,0 +1,36 @@
+from heapq import heappop, heappush
+
+res = []
+heap = []
+
+for _ in range(int(input())):
+    op = list(input().split())
+
+    if "insert" in op:
+        heappush(heap, int(op[-1]))
+    elif "removeMin" in op:
+        if not heap:
+            heappush(heap, 1)
+            res.append(["insert", 1])
+        heappop(heap)
+    elif "getMin" in op:
+        if heap:
+            if heap[0] < int(op[-1]):
+                while heap and heap[0] < int(op[-1]):
+                    res.append(["removeMin"])
+                    heappop(heap)
+                if not heap or (heap and heap[0] > int(op[-1])):
+                    heappush(heap, int(op[-1]))
+                    res.append(["insert", int(op[-1])])
+            elif heap[0] > int(op[-1]):
+                heappush(heap, int(op[-1]))
+                res.append(["insert", int(op[-1])])
+        else:
+            heappush(heap, int(op[-1]))
+            res.append(["insert", int(op[-1])])
+
+    res.append(op)
+
+print(len(res))
+for i in res:
+    print(*i, sep=" ")
