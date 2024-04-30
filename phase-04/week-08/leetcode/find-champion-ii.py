@@ -1,13 +1,15 @@
 class Solution:
     def findChampion(self, n: int, edges: List[List[int]]) -> int:
-        indeg = defaultdict(int)
+        lose = set()
         for strong, weak in edges:
-            indeg[weak] += 1
+            lose.add(weak)
 
         res = []
         for i in range(n):
-            if not indeg[i]:
+            if i not in lose:
+                if res: return -1
                 res.append(i)
 
-        return res.pop() if len(res) == 1 else -1
+        return res.pop()
+
         
