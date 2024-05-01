@@ -1,0 +1,15 @@
+n, m, k = list(map(int, input().split()))
+arr = []
+for i in range(m):
+    arr.append(int(input()))
+
+
+fedor = int(input())
+
+res = 0
+for num in arr:
+    temp = str(bin(num^fedor))[2:]
+    if temp.count("1") <= k:
+        res += 1
+
+print(res)
