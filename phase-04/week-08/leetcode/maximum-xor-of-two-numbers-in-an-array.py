@@ -1,7 +1,7 @@
 class Solution:
     def findMaximumXOR(self, nums: List[int]) -> int:
         # the solution works by coupling bit manipulation with a greedy approach
-        # we need to find a number such that is has more ones to the right than all possiblities
+        # we need to find a number such that is has more ones to the left than all possiblities
         # we start from the leftmost bit position and check if it is possible for us to 
         # flip it on (if so we do and if not we don't) until the rightmost position
         # by the time we have finished, we get a number such that all of its leftmost bits 
