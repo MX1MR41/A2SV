@@ -1,0 +1,40 @@
+class Solution:
+    def maxScoreWords(self, words: List[str], letters: List[str], score: List[int]) -> int:
+        def valid(word, cnt):
+            new = copy.deepcopy(cnt)
+            for i in word:
+                if new[i] <= 0: return False
+                new[i] -= 1
+
+            return True
+
+        sc = dict()
+        for i in range(97,123):
+            sc[chr(i)] = score[i - 97]
+
+
+        n = len(words)
+        def dfs(ind, cnt):
+            if ind >= n: return 0
+
+            curr = 0
+            exclude = dfs(ind + 1, cnt)
+
+            word = words[ind]
+            include = 0
+            if valid(word, cnt):
+                temp = copy.deepcopy(cnt)
+                for i in word:
+                    temp[i] -= 1
+
+                
+
+                include = sum(sc[i] for i in word) + dfs(ind + 1, temp)
+
+
+            curr += max(include, exclude)
+
+            return curr
+
+        return dfs(0, Counter(letters))
+        
