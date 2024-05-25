@@ -21,3 +21,33 @@ for j in range((N//2)+1, N+1): # heads > tails
     ans += dp[N][j]
 
 print(ans)
+
+
+
+"""
+Recursive solution
+
+from collections import defaultdict
+N = int(input())
+arr = list(map(float, input().split()))
+dp = defaultdict(int)
+ans = 0
+def dfs(ind, H, T):
+  # nonlocal ans
+  if (ind, H, T) in dp: return dp[(ind, H, T)]
+  if ind == N:
+    if H > T: return 1
+    return 0
+  
+  head = arr[ind] * dfs(ind + 1, H + 1, T)
+  tail = (1- arr[ind]) * dfs(ind + 1, H, T + 1)
+  curr = head + tail
+
+  
+  dp[(ind, H, T)] = curr
+  return curr
+  
+print(dfs(0,0,0))
+  
+
+"""
