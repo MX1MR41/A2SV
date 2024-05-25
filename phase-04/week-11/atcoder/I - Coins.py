@@ -28,12 +28,13 @@ print(ans)
 Recursive solution
 
 from collections import defaultdict
+
 N = int(input())
 arr = list(map(float, input().split()))
 dp = defaultdict(int)
-ans = 0
+
 def dfs(ind, H, T):
-  # nonlocal ans
+
   if (ind, H, T) in dp: return dp[(ind, H, T)]
   if ind == N:
     if H > T: return 1
