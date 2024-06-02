@@ -9,5 +9,7 @@ class Solution:
             for j in range(i+1, min(end+1, n)):
                 dp[j] = min(dp[j], dp[i] + 1)
 
+            if dp[-1] != float("inf"): break
+
         return dp[-1]
         
