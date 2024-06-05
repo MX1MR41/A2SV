@@ -24,3 +24,20 @@ class Solution:
             # 3) buy today's stock from when you were stock-les TODAY
 
         return dp[-1][0]
+
+
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        n = len(prices)
+
+        stock, stockless = -prices[0], 0
+
+        for i in range(1, n):
+
+            today_stockless = max(stockless, stock + prices[i])
+
+            stock = max(stock, stockless - prices[i], today_stockless - prices[i])
+
+            stockless = max(stockless, today_stockless)
+
+        return stockless
