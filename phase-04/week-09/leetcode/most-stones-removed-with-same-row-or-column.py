@@ -1,8 +1,7 @@
 class UnionFind:
-    def __init__(self, n):
-        self.root = {i:i for i in range(n)}
+    def __init__(self, arr):
+        self.root = {tuple(a):tuple(a) for a in arr}
         self.rank = defaultdict(int)
-        self.len = {i:1 for i in range(n)}
 
     def find(self, x):
         if x != self.root[x]:
@@ -12,45 +11,39 @@ class UnionFind:
 
     def union(self, x, y):
         rootx, rooty = self.find(x), self.find(y)
-        rankx, ranky = self.rank[rootx], self.rank[rooty]
-        lenx, leny = self.len[rootx], self.len[rooty]
-
         if rootx != rooty:
-            if rankx < ranky:
-                self.root[rootx] = rooty
-            elif rankx > ranky:
+            rankx, ranky = self.rank[rootx], self.rank[rooty]
+            if rankx > ranky:
                 self.root[rooty] = rootx
+            elif rankx < ranky:
+                self.root[rootx] = rooty
             else:
                 self.root[rootx] = rooty
                 self.rank[rooty] += 1
-
-            self.len[rootx] = self.len[rooty] = lenx + leny
-
-
 
 class Solution:
     def removeStones(self, stones: List[List[int]]) -> int:
         # we use unionfind to group stones which share either the same row or the same column
         # with any one or more stones in the same group
-        # then from each group we can remove alll stones except 1, so we iterate over the groups
+        # then from each group we can remove all stones except 1, so we iterate over the groups
         # and remove (number of stones in that group - 1) stones
+        dsu = UnionFind(stones)
         n = len(stones)
-
-        dsu = UnionFind(n)
-
         for i in range(n):
-            for j in range(n):
-                if i == j: continue
+            r, c = stones[i]
+            for j in range(i+1, n):
+                rp, cp = stones[j]
+                if r == rp or c == cp:
+                    dsu.union((r,c), (rp, cp))
 
-                if stones[i][0] == stones[j][0] or stones[i][1] == stones[j][1]:
-                    dsu.union(i, j)
+        groups = defaultdict(set)
+        for i in stones:
+            groups[dsu.find(tuple(i))].add((tuple(i)))
 
 
         ans = 0
-        roots = set()
-        for i in range(n):
-            roots.add(dsu.find(i))
+        for s in groups.values():
+            ans += len(s) - 1
 
-
-        return sum(count - 1 for count in [dsu.len[i] for i in roots])
+        return ans
         
