@@ -12,7 +12,7 @@ for _ in range(t):
     m, n = map(int, input().split())
 
     for _ in range(m):
-        row = list(map(int, input()))
+        row = list(map(int, input().split())
         mat.append(row)
 
     for i in range(m):
