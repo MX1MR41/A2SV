@@ -1,14 +1,31 @@
-t = int(input())
-skills = sorted(map(int, input().split()))
-n = len(skills)
+for _ in range(int(input())):
+    n = int(input())
+    s = input()
+    i, j = 0, n - 1
+    left = right = 0
+    templeft, tempright = [], []
+    flag = False
+    while i < j:
+        if s[i] != s[j]:
+            if not left and not right and templeft and tempright:
+                flag = True
+                break
+            else:
+                left += 1
+                right += 1
+        else:
+            if left and right:
+                templeft.append(left)
+                tempright.append(right)
+            left = right = 0
 
-maxNum = 0
-end = 0
+        i += 1
+        j -= 1
 
-for start in range(t):
+    if flag: print("No")
+    else:
+        if right == left:
+            print("Yes")
+        else:
+            print("No")
 
-    while end < n and skills[end] - skills[start] <= 5:
-        end += 1
-    maxNum = max(maxNum, end - start)
-
-print(maxNum)
