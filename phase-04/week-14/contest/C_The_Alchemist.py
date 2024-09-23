@@ -1,58 +1,50 @@
-import sys
 from collections import defaultdict, deque
 
-input = sys.stdin.read
-data = input().split()
-index = 0
 
-test_cases = int(data[index])
-index += 1
+for _ in range(int(input())):
+    n, k = list(map(int, input().split()))
+    coins = list(map(int, input().split()))
+    has = list(map(int, input().split()))
+    mix = defaultdict(list)
 
-results = []
 
-for _ in range(test_cases):
-    n = int(data[index])
-    k = int(data[index + 1])
-    index += 2
 
-    cost = [0] + list(map(int, data[index : index + n]))
-    index += n
+    for potion in range(n):
+        need = list(map(int, input().split()))
+        if need[0]: mix[potion] = [i - 1 for i in need[1:]]
 
-    nums = set(map(int, data[index : index + k]))
-    index += k
+    g = defaultdict(list)
+    deg = defaultdict(int)
+    for p, ingredients in mix.items():
+        for ing in ingredients:
+            g[ing].append(p)
+            deg[p] += 1
+    # print("graph", g)
+    # print("deg", deg)
+    
+    dp = coins[::]
+    for i in has: dp[i-1] = 0
 
-    graph = defaultdict(list)
-    degree = [0] * (n + 1)
-    future = [0] * (n + 1)
-    ans = [0] * (n + 1)
+    def cost(potion):
+        if potion in mix: return min(dp[potion], sum(dp[i] for i in mix[potion]))
+        else: return dp[potion]
 
-    for i in range(1, n + 1):
-        m = int(data[index])
-        edges = list(map(int, data[index + 1 : index + 1 + m]))
-        index += 1 + m
-        if i in nums:
-            continue
-        degree[i] = m
-        for a in edges:
-            graph[a].append(i)
+    # print("-"*50)
 
-    queue = deque()
-    for node in range(1, n + 1):
-        if node in nums:
-            queue.append(node)
-        elif degree[node] == 0:
-            ans[node] = cost[node]
-            queue.append(node)
+    que = deque()
+    for i in range(n):
+        if not deg[i]: que.append(i)
 
-    while queue:
-        node = queue.popleft()
-        for child in graph[node]:
-            degree[child] -= 1
-            future[child] += ans[node]
-            if degree[child] == 0:
-                queue.append(child)
-                ans[child] = min(cost[child], future[child])
+    while que:
+        for _ in range(len(que)):
+            curr = que.popleft()
+            dp[curr] = cost(curr)
+            for nei in g[curr]:
+                deg[nei] -= 1
+                if not deg[nei]:
+                    que.append(nei)
 
-    results.append(" ".join(map(str, ans[1:])))
+    print(*dp)
 
-print("\n".join(results))
+
+
