@@ -19,11 +19,11 @@ class Solution:
             # and that the range between those two numbers was divisible by k
             if extra_sum in seen:
                 res += seen[extra_sum] # if we have x such numbers, then there are x such valid possible deduction combinations
-                seen[extra_sum] += 1 # doing this instead of seen[pre] += 1, will yeild better effects
-                # because you'll still store the remainder but choosing the smaller extra_sum would ensure
-                # you wont miss any such subarrays in the future
-            else:
-                seen[extra_sum] += 1
+                
+            seen[extra_sum] += 1 # doing this instead of seen[pre] += 1, will yeild better effects
+            # because you'll still store the remainder but choosing the smaller extra_sum would ensure
+            # you wont miss any such subarrays in the future
+
 
         return res
         
