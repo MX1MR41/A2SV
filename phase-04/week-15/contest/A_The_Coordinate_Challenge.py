@@ -4,14 +4,13 @@ https://codeforces.com/gym/531455/problem/A
 
 """
 
+from math import ceil
+
+
 for _ in range(int(input())):
     n = int(input())
     if n == 1:
         print(2)
         continue
-
-    ans = n // 3
-    if n % 3:
-        ans += 1
-
-    print(ans)
+    
+    print(ceil(n/3))
