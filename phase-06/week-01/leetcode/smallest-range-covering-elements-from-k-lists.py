@@ -1,5 +1,46 @@
 class Solution:
     def smallestRange(self, nums: List[List[int]]) -> List[int]:
+        # heap
+        # Store an element from every group into a heap then keep replacing by a group-mate
+        # and calculating the result.
+        # Start from the first element of every group and push into heap along with their group 
+        # and index number (row, col).
+        # From the first nums, store the max one. And at all time when replacing a number
+        # update the max.
+
+        k = len(nums)
+        heap = []  
+        largest = float("-inf")
+
+        
+        for i in range(k):
+            row, col = i, 0
+            smallest = nums[row][col]
+            heappush(heap, (smallest, row, col))
+            largest = max(largest, smallest)
+
+        ans = [0, float("inf")]
+        while len(heap) == k:
+            smallest, row, col = heappop(heap)
+
+            if largest - smallest < ans[1] - ans[0] or (largest - smallest == ans[1] - ans[0] and smallest < ans[0]):
+                ans = [smallest, largest]
+
+            next_index = col + 1
+            if next_index < len(nums[row]):
+                next_num = nums[row][next_index]
+                largest = max(largest, next_num)
+                heappush(heap, (next_num, row, next_index))
+
+        return ans
+            
+
+
+        
+        
+
+class Solution:
+    def smallestRange(self, nums: List[List[int]]) -> List[int]:
         # Sliding window + prefix sum
         # Convert each list into a set and store in a hashmap with their indices as keys.
         # Create a sorted list of all the unique numbers.
