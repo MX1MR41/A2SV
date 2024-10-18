@@ -7,7 +7,7 @@ class Solution:
         for i in nums:
             _max |= i
 
-        def dfs(ind, totor, seen):
+        def dfs(ind, totor):
             nonlocal total
             if ind == n:
                 return
@@ -15,7 +15,7 @@ class Solution:
                 total += 1
 
             for i in range(ind + 1, n):
-                dfs(i, totor | nums[i], seen + str(nums[i]))
+                dfs(i, totor | nums[i])
 
-        dfs(-1, 0, "")
+        dfs(-1, 0)
         return total
