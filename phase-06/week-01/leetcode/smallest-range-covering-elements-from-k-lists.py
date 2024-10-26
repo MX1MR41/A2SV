@@ -1,5 +1,6 @@
 class Solution:
     def smallestRange(self, nums: List[List[int]]) -> List[int]:
+        # neetcode said he has no idea how to solve it, but i solved it on my own
         # heap
         # Store an element from every group into a heap then keep replacing by a group-mate
         # and calculating the result.
