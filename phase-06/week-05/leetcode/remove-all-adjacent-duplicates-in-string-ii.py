@@ -1,5 +1,7 @@
 class Solution:
     def removeDuplicates(self, s: str, k: int) -> str:
+        # stack
+        # instead of storing every element occurence, store an element with frequency
         stk = []
         for i in s:
             if stk and stk[-1][0] == i:
