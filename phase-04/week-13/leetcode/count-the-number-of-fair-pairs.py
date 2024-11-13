@@ -1,20 +1,42 @@
 class Solution:
     def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
         # sorting + binary search
-        nums.sort()
+        # for each num, find the the first next num which would make their sum >= lower
+        # and find last next num which would make their sum <= upper
+        # the number of elements in between (hi - lo + 1) are all the valid choices
         n = len(nums)
-        ans = 0
-        
-        for i in range(n):
-            num = nums[i]
-            # the numbers whose sum with num would give lower and upper
-            lo, hi = lower - num, upper - num
+        count = 0
+        nums.sort()
 
-            # find the first occurence  of lo
-            start = bisect.bisect_left(nums, lo, i + 1)
-            # find the index just after the last occurence of hi
-            end = bisect.bisect_right(nums, hi, i + 1)
+
+        for i in range(n - 1):
+            l, r = i + 1, n - 1
+            hi, lo = l, r
+
+            while l <= r:
+                mid = (l + r)//2
+                if nums[mid] + nums[i] >= lower:
+                    lo = mid
+                    r = mid - 1
+                else:
+                    l = mid + 1
+
+            l, r = i + 1, n - 1
+            while l <= r:
+                mid = (l + r)//2
+                if nums[mid] + nums[i] <= upper:
+                    hi = mid
+                    l = mid + 1
+                else:
+                    r = mid - 1
+
+
+            if lower <= nums[i] + nums[lo] and nums[i] + nums[hi] <= upper:
+                count += hi - lo + 1
+
+        return count
             
-            ans += end - start
+            
 
-        return ans
+
+        
