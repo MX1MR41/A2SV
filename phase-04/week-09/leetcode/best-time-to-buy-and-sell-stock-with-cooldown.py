@@ -37,3 +37,35 @@ class Solution:
 
 
         return dp[-1][0]
+
+
+# shorter version
+
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        stock = (-prices[0], 0)
+        stockless = (0, 0)
+        prevstockless = (0, -1)
+
+        ans = 0
+
+        for i in range(1, len(prices)):
+            sell = stock[0] + prices[i]
+
+            currstockless = stockless
+            if sell > stockless[0]:
+                currstockless = (sell, i)
+
+            buy = prevstockless[0] - prices[i]
+            if buy > stock[0]:
+                stock = (buy, i)
+
+            if stockless[0] > prevstockless[0]:
+                prevstockless = stockless
+
+            stockless = currstockless
+
+            ans = max(stock[0], stockless[0], prevstockless[0])
+
+        return ans
+
