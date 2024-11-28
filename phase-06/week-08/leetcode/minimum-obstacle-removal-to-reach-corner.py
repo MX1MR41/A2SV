@@ -36,5 +36,31 @@ class Solution:
         
 
 
+class Solution:
+    def minimumObstacles(self, grid: List[List[int]]) -> int:
+        # bfs + dp
+        # we initialize the dp of every cell as infinity then for each cell we are in,
+        # if exploring a neighbor from this cell would result in a smaller dp for the
+        # neighbor than its original dp, we update it as so and add it to the queue
+        rows, cols = len(grid), len(grid[0])
+
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+        inbound = lambda row, col: 0 <= row < rows and 0 <= col < cols 
+
+        dp = [[float("inf") for _ in range(cols)] for _ in range(rows)]
+
+        dp[0][0] = 0
+        que = deque([(0, 0)])
+
+        while que:
+            r, c = que.popleft()
+            for dr, dc in directions:
+                nr, nc = r + dr, c + dc
+                if inbound(nr, nc) and dp[r][c] + grid[nr][nc] < dp[nr][nc]:
+                    dp[nr][nc] = dp[r][c] + grid[nr][nc]
+                    que.append((nr, nc))
+
+        return dp[-1][-1]
 
         
