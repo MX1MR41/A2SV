@@ -1,6 +1,5 @@
 class Solution:
     def addSpaces(self, s: str, spaces: List[int]) -> str:
-        spaces.sort()
         n_spaces = len(spaces)
         res = ""
         n_s = len(s)
