@@ -1,3 +1,9 @@
+"""
+
+https://codeforces.com/edu/course/2/lesson/4/1/practice/contest/273169/problem/A
+
+"""
+
 from math import ceil, log2
 
 
