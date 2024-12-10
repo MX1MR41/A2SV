@@ -9,8 +9,6 @@ class Solution:
                 cnt += 1
                 if cnt == k:
                     continue
-                elif cnt > k:
-                    stk.append((i, cnt - k))
 
                 elif cnt < k:
                     stk.append((i, cnt))
