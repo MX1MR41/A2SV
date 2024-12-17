@@ -26,5 +26,4 @@ class Solution:
                     )
                     dp[left][right] = max(dp[left][right], coins)  # Update DP table
 
-        # Step 5: Result is stored in dp[1][n-2]
         return max([max(d) for d in dp])
