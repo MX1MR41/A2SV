@@ -1,31 +1,31 @@
 class Solution:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
+        # sorting + two pointers
+        # for every num, we do a two pointers search over the rest of the array
+        # to find valid choices
+        
         nums.sort()
-        seen = set()
         n = len(nums)
-        res = []
-        for i in range(n - 1):
+        triplets = set()
+        for i in range(n):
             a = nums[i]
-            if a in seen: # to prevent duplicates
-                continue
-            seen.add(a)
-            l = i + 1
-            r = n - 1
-            while l < r:
-                b, c = nums[l], nums[r]
-                tsum = a + b + c
+            need = 0 - a
+            left, right = i + 1, n - 1
 
-                if tsum == 0:
-                    res.append([a,b,c])
-                    while l < r and nums[l] == b:
-                        l += 1
-                    while r > l and nums[r] == c:
-                        r -= 1
-                elif tsum < 0:
-                    while l < r and nums[l] == b:
-                        l += 1
-                elif tsum > 0:
-                    while r > l and nums[r] == c:
-                        r -= 1
-                
-        return res
+            while left < right:
+                b, c = nums[left], nums[right]
+                two_sum = b + c
+                if two_sum == need:
+                    triplets.add(tuple([a, b, c]))
+                    left += 1
+                    right -= 1
+
+                if two_sum < need:
+                    left += 1
+
+                if two_sum > need:
+                    right -= 1
+
+        return list(triplets)
+
+        
