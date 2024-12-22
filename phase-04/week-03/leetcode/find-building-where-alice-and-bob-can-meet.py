@@ -26,7 +26,7 @@ class Solution:
         for ind, x, y in queries:
             # for every element to the right of y that we haven't yet put onto the stack
             # we put them onto the stack in a monotonically increasing way so that 
-            # the stop of the stack (end of the array) will have the smallest element
+            # the top of the stack (end of the array) will have the smallest element
             while current_index >= 0 and current_index >= y:
                 h = heights[current_index]
 
