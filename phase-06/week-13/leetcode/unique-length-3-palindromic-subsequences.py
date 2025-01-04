@@ -34,4 +34,48 @@ class Solution:
 
 
 
+# BIT MANIPULATION SOLUTION
+class Solution:
+    def countPalindromicSubsequence(self, s: str) -> int:
+        # prefix sum + suffix sum + bit manipulation
+        # instead of frequency arrays for each index, we use a bit mask to keep track
+        # of the letters seen to the right and to the left of each letter
+
+        prefix = []
+        mask = 0
+        for i in s:
+            prefix.append(mask)
+            letter = ord(i) - 96
+            mask |= (1 << letter)
+        
+        suffix = []
+        mask = 0
+
+        for i in s[::-1]:
+            suffix.append(mask)
+            letter = ord(i) - 96
+            mask |= (1 << letter)
+
+
+        suffix.reverse()
+
+        pals = set()
+        for i in range(len(s)):
+            curr = s[i]
+            pre_mask = prefix[i]
+            suff_mask = suffix[i]
+
+            for j in range(27):
+                if pre_mask & (1 << j) and suff_mask & (1 << j):
+                    pal = chr(96 + j) + curr + chr(96 + j)
+                    pals.add(pal)
+
+        return len(pals)
+
+
+
+        
+
+
+
         
