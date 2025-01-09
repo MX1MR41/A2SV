@@ -15,8 +15,11 @@ class Solution:
         # dfs
         # keep dividing the grid into four quadrants until you have only one cell which is base case
         # build up from there
+
+        # corners: topLeft = [row][col], topRight = [row][col + dist], 
+        # bottomLeft = [row + dist][col], bottomRight = [row + dist][col + dist]
         def quad(row, col, dist):
-            if dist == 0:
+            if dist == 0: # a single cell
                 node = Node(grid[row][col], True, None, None, None, None)
                 return node
 
@@ -32,7 +35,7 @@ class Solution:
             allSameValues = topLeft.val == topRight.val == bottomLeft.val == bottomRight.val
 
 
-            if allLeaves and allSameValues:
+            if allLeaves and allSameValues: # we cam make this node itself a leaf and discard the rest
                 node = Node(topLeft.val, True, None, None, None, None)
             else:
                 node = Node(0, False, topLeft, topRight, bottomLeft, bottomRight)
