@@ -1,3 +1,9 @@
+"""
+
+https://codeforces.com/gym/101102/problem/K
+
+"""
+
 from collections import defaultdict
 
 for _ in range(int(input())):
