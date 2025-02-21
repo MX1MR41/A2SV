@@ -1,3 +1,7 @@
+"""
+https://codeforces.com/contest/302/problem/B
+"""
+
 from collections import defaultdict
 
 
