@@ -4,39 +4,55 @@
 #         self.val = val
 #         self.left = left
 #         self.right = right
-
 class Solution:
     def recoverFromPreorder(self, traversal: str) -> Optional[TreeNode]:
-        # keep track of nodes by using a hashmap with depth as key
-        # for each node, attach it to the last node added to the depth just above it
-        nodes_at_depth = defaultdict(list)
-        i = 0
+        # stack
+        # keep track of the last added nodes for every depth
+        # and for every node at depth d, append it as a child to the last node added
+        # for depth d - 1, i.e. candidate parent
+
+        travs = []
+        curr = ""
+        flag = True
+
         n = len(traversal)
-        depth = 0
-
+        i = 0
         while i < n:
-            if traversal[i] == "-": 
-                depth += 1
-                i += 1
-            else:
-                j = i + 1
-                while j < n and traversal[j] != "-": 
-                    j += 1
-                node = int(traversal[i:j])
-                parent_depth = depth - 1
+            if traversal[i] == "-":
+                if flag:
+                    travs.append(curr)
+                    curr = ""
+                    flag = False
 
-                if not nodes_at_depth[parent_depth]:
-                    nodes_at_depth[depth].append(TreeNode(node))
-                else:
-                    parent = nodes_at_depth[parent_depth][-1]
-                    if parent.left:
-                        parent.right = TreeNode(node)
-                        nodes_at_depth[depth].append(parent.right)
-                    else:
-                        parent.left = TreeNode(node)
-                        nodes_at_depth[depth].append(parent.left)
-                
-                depth = 0
-                i = j
-            
-        return nodes_at_depth[0].pop()
+            else:
+                flag = True
+
+            curr += traversal[i]
+            i += 1
+
+        if curr:
+            travs.append(curr)
+
+        nodes = []
+        for trav in travs:
+            split = trav.split("-")
+            nodes.append((int(split[-1]), len(split) - 1))
+
+        nodes_at_depth = defaultdict(list)
+        root = TreeNode(nodes[0][0])
+        nodes_at_depth[0].append(root)
+
+        for num, depth in nodes[1:]:
+            node = TreeNode(num)
+            parent = nodes_at_depth[depth - 1][-1]
+
+            if not parent.left:
+                parent.left = node
+
+            else:
+                parent.right = node
+                nodes_at_depth[depth - 1].pop()
+
+            nodes_at_depth[depth].append(node)
+
+        return root
