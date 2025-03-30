@@ -1,47 +1,41 @@
 class Solution:
     def partitionLabels(self, s: str) -> List[int]:
-        n = len(s)
-        first = {} # store the first indices of each element
-        for i in range(n):
-            if s[i] not in first:
-                first[s[i]] = i
-            
-        last = {} # store the last indices of each element
-        for i in range(n):
-            last[s[i]] = i
+        # store the starting and ending indices for each letter
+        # gather them as ranges for each letter and sort the ranges
+        # then merge intervals just like https://leetcode.com/problems/merge-intervals/
+        
+        first = dict()
+        last = dict()
+
+        for i, c in enumerate(s):
+            if c not in first:
+                first[c] = i
+
+            last[c] = i
+
+        intervals = []
+
+        for letter in set(s):
+            s = first[letter]
+            e = last[letter]
+
+            intervals.append([s, e])
+
+        intervals.sort()
 
 
-        l, r = 0, 0 # left and right pointers of each partition
-        # a counter for elements who havent reached their last indices yet 
-        #and a set to store the elements seen so far
-        nonEnd, seen = 0, set() 
         res = []
+        for s, e in intervals:
+            if not res:
+                res.append([s, e])
+                continue
 
-        while r < n:
-            j = s[r]
-            if r == last[j]:
-                if last[j] != first[j]: # we deduct nonEnd only if the current element isnt an only element
-                    nonEnd -= 1
-
-                if not nonEnd: # if there are no more elements before it who havent met theor last indeies
-                    res.append(r - l + 1)
-                    l = r + 1
-                
+            
+            if s < res[-1][-1]:
+                res[-1][1] = max(res[-1][-1], e)
             else:
-                if j not in seen: # the set helps with avoiding over decreasing the nonEnd
-                    nonEnd += 1
-
-            seen.add(j)
-
-            r += 1
-            
-        return res
+                res.append([s, e])
 
 
+        return [e - s + 1 for s, e in res]
 
-
-
-
-        
-            
-        
