@@ -1,7 +1,7 @@
 # the key to solving the cutting part is, well there is no
 # optimal approach than dfs-ing and updating roots one by one
 # so instead we process the queries in reverse, and when we face a cut, we union 
-
+# https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/D
 
 from collections import defaultdict
 
