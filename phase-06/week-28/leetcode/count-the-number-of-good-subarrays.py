@@ -1,3 +1,4 @@
+# Solution 1
 class SegmentTree:
     def __init__(self, n):
         self.n = 2 ** ceil(log2(n))
@@ -55,3 +56,46 @@ class Solution:
                 l += 1
 
         return res
+
+# Solution 2
+
+class Solution:
+    def countGood(self, nums: List[int], k: int) -> int:
+        # sliding window
+        # when we add a new occurence of a number x into the window, we need to 
+        # recompute x's individual contribution to the total number of pairs
+        # we do that by deducting the contribution it had with its previous frequency
+        # and adding the new contribution it will have with its new frequency.
+        # The same logic applies, but in reverse, when we remove an element from window
+        # A number x with frequency f contributes (f*(f - 1))//2 pairs 
+        pairs = 0
+        res = 0
+        freq = defaultdict(int)
+
+        l = 0
+        n = len(nums)
+        for r in range(n):
+            rnum = nums[r]
+            last_freq = freq[rnum]
+            new_freq = last_freq + 1
+            freq[rnum] = new_freq
+
+            pairs -= (last_freq*(last_freq - 1))//2
+            pairs += (new_freq*(new_freq - 1))//2
+
+            while pairs >= k:
+                res += n - r #every subsequent subarray that includes this one is valid
+
+                lnum = nums[l]
+                last_freq = freq[lnum]
+                new_freq = last_freq - 1
+                freq[lnum] = new_freq
+
+                pairs -= (last_freq*(last_freq - 1))//2
+                pairs += (new_freq*(new_freq - 1))//2
+
+                l += 1
+
+        return res
+                    
+        
