@@ -68,7 +68,7 @@ class Solution:
 
 
 # Solution 2
-# Note: code gives MLE in Python3 but would pass in C++
+# Note: code gives TLE in Python3 but would pass in C++
 
 
 class SegmentTree:
