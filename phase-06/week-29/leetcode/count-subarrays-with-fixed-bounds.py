@@ -1,6 +1,3 @@
-from typing import List
-from collections import deque
-
 class Solution:
     def countSubarrays(self, nums: List[int], minK: int, maxK: int) -> int:
         # sliding window + monotonic queues
