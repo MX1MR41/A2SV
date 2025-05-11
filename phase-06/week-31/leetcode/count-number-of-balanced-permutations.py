@@ -1,4 +1,14 @@
 class Solution:
+    """
+    (a / b) % m != (a % m) / (b % m)
+    (a / b) % m = (a * inverse(b)) % m =, where inverse(b) is the modular multiplicative inverse of b
+    modular inverse of a number b is such a number x where (b * x) % m = 1
+    from Fermat's little theorem, (b**(m - 1)) % m = 1, (b * (b ** (m - 2))) % m = 1
+    therefore x = (b ** (m - 2)) % m
+    so to compute (s!/(f1! * f2!)) % m, we use the inverses of f1 and f2 as follows
+    (s! * inverse(f1!) * inverse(f2!)) % m 
+
+    """
     def countBalancedPermutations(self, num: str) -> int:
         # dp + combinatorics
         # count how many ways to pick half of the digits so their sum = half of total,
@@ -25,14 +35,9 @@ class Solution:
         for i in range(1, n + 1):
             fact[i] = fact[i - 1] * i % MOD
         
-        # MODular inverses for 1..n via Fermat's little theorem trick
-        inv = [1] * (n + 1)
-        for i in range(2, n + 1):
-            inv[i] = MOD - (MOD // i) * inv[MOD % i] % MOD
-        
-        invFact = [1] * (n + 1)
+        invfact = [1] * (n + 1)
         for i in range(1, n + 1):
-            invFact[i] = invFact[i - 1] * inv[i] % MOD
+            invfact[i] = pow(fact[i], 10**9 + 5, MOD)
         
         halfSum = total // 2
         halfLen = n // 2
@@ -72,6 +77,6 @@ class Solution:
         # divide out overcount from identical digits across entire string
         # (f1! * f2! * f3! * f4! * f5!)
         for cnt in digits:
-            res = res * invFact[cnt] % MOD
+            res = res * invfact[cnt] % MOD
         
         return res
