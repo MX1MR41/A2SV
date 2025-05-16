@@ -17,14 +17,14 @@ given an inital string "abb", which can represented as [[1,2,0,0]] as a frequncy
 applying the given rules in the matrix to this vector can be simulated using matrix multiplication
 we multiply the frequency vector by the transformation rules matrix
 
-[[1,2,0,0]] x [[0,1,1,0],   which would give [[0,1,3,0]] i.e. that the result would be "bccc"
+[[1,2,0,0]] x [[0,1,1,0],   which would give [[0,1,3,0]] i.e. the result would be "bccc"
                [0,0,1,0],
                [0,0,0,1],
                [0,0,0,0]]
 
 this is one transformation. To perform another transformation, we multiply the result vector by the matrix one more time
 
-[[0,1,3,0]] x [[0,1,1,0],   which would give [[0,0,1,3]] i.e. that the result would be "cddd"
+[[0,1,3,0]] x [[0,1,1,0],   which would give [[0,0,1,3]] i.e. the result would be "cddd"
                [0,0,1,0],
                [0,0,0,1],
                [0,0,0,0]]
