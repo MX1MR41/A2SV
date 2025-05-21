@@ -1,3 +1,4 @@
+# Solution 1
 class SegmentTree:
     def __init__(self, n):
         self.n = 2 ** ceil(log2(n))
@@ -100,3 +101,81 @@ class Solution:
                 return -1
 
         return len(queries) - used
+
+
+# Solution 2
+class Solution:
+    def maxRemoval(self, nums: List[int], queries: List[List[int]]) -> int:
+        # queue  + heap
+        n = len(nums)
+
+        # 1. Initialize 'q': Sort all queries by their start points.
+        #    queries = [[0,2],[0,2],[1,1]] for nums = [2,0,2]
+        #    q becomes deque([[0,2], [0,2], [1,1]])
+        q = deque(sorted(queries)) # Sorts by first element (l), then second (r) if l's are equal
+
+        # 2. Initialize 'available' and 'working' piles (priority queues)
+        available = [] # Min-heap storing -r (to simulate a max-heap of r)
+        working = []   # Min-heap storing r (to find earliest ending active query)
+
+        # --- The Sweep Line ---
+        # For each index i in our nums array...
+        for i in range(n):
+            # --- Step A: Add newly relevant queries to the 'available' pile ---
+            # Look at queries in 'q' (sorted by start time).
+            # If a query [l, r] has its start time l <= current index i,
+            # it means this query *could* start working now. Move it from 'q' to 'available'.
+            while q and q[0][0] <= i:
+                # q[0] is the query [l,r] at the front of the deque
+                # q[0][0] is its start point l
+                start_l, end_r = q.popleft() # Take it out of q
+                # Add its end_r to 'available', negated because 'available' is a min-heap
+                # acting as a max-heap for end_r.
+                heapq.heappush(available, -end_r)
+
+            # --- Step B: Remove expired queries from the 'working' pile ---
+            # Look at queries in 'working' (queries we previously chose).
+            # If a chosen query [l, r] has its end point r < current index i,
+            # it means this query no longer covers nums[i]. Remove it from 'working'.
+            # working[0] is the smallest end_r in the 'working' min-heap.
+            while working and working[0] < i:
+                heapq.heappop(working) # Remove the query that finished earliest and before i
+
+            # --- Step C: Satisfy nums[i] using 'working' and 'available' ---
+            # nums[i] is the target number of decrements for the current element.
+            # len(working) is how many decrements nums[i] is already getting
+            # from queries we've already committed to.
+            while nums[i] > len(working):
+                # We need more decrements for nums[i].
+                # We need to pick a new query. The best one to pick is from 'available'
+                # that covers 'i' and extends furthest to the right.
+
+                # Condition 1: Is there anything in 'available'?
+                # Condition 2: Does the best query in 'available' actually cover 'i'?
+                #              -available[0] is the largest end_r from the 'available' pile.
+                #              If this largest end_r is less than i, then no query in 'available'
+                #              can cover i (since all others have even smaller end_r's).
+                if available and -available[0] >= i:
+                    # Yes, there's a suitable query in 'available'.
+                    # Take the best one (largest -r, so smallest -r when popped).
+                    best_r_negative = heapq.heappop(available)
+                    # Convert it back to a positive end_r and add to 'working'.
+                    heapq.heappush(working, -best_r_negative)
+                    # Now len(working) has increased by 1, so nums[i] gets one more decrement.
+                else:
+                    # No suitable query in 'available' to cover nums[i].
+                    # This means we cannot satisfy nums[i]. The task is impossible.
+                    return -1
+
+        # --- After the Loop ---
+        # If we've successfully processed all nums[i] without returning -1,
+        # it means we found a set of queries to zero out the array.
+
+        # What does 'len(available)' mean now?
+        # 'available' contains queries that:
+        #   1. Started (their l was <= some i we processed).
+        #   2. Were *never chosen* to be moved to 'working'.
+        # These are precisely the queries that we *didn't need to use*.
+        # So, these are the queries we can remove.
+        # The problem asks for the maximum number of elements that can be removed.
+        return len(available)
