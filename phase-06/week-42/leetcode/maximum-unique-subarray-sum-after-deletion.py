@@ -1,17 +1,13 @@
 class Solution:
     def maxSum(self, nums: List[int]) -> int:
 
-        res = float("-inf")
 
-        n = len(nums)
+        negs = [num for num in nums if num <= 0]
 
-        for l in range(n):
-            for r in range(l + 1, n + 1):
-                unique = set(nums[l:r])
-                if max(unique) <= 0:
-                    res = max(res, max(unique))
-                    continue
+        res = max(negs) if negs else 0
 
-                res = max(res, sum(i for i in unique if i >= 0))
+        unique = set([num for num in nums if num > 0])
+        if unique:
+            res = max(res, sum(unique))
 
         return res
