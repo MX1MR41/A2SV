@@ -1,3 +1,43 @@
+# Solution 1
+
+class Solution:
+    def checkArray(self, nums: List[int], k: int) -> bool:
+        # prefix sum
+        # keep track of how much is deducted from a num at any index by using prefix sum
+        # and keeping track of a running sum while iterating over the prefix sum array
+
+        n = len(nums)
+        
+        prefix_sum = [0] * n
+        running_sum = 0
+
+        for left in range(n):
+            deduct = running_sum + prefix_sum[left]
+            num = nums[left] - deduct
+            if num < 0:
+                return False
+
+            if num > 0:
+                right = left + k - 1
+                if right >= n:
+                    return False
+
+
+                prefix_sum[left] += num
+                if right < n - 1:
+                    prefix_sum[right + 1] -= num
+
+            running_sum += prefix_sum[left]
+            
+
+        return True
+
+                
+        
+
+
+# Solution 2
+
 class SegmentTree:
     def __init__(self, n):
         self.n = 2 ** ceil(log2(n))
