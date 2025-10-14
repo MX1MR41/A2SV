@@ -1,23 +1,22 @@
 class Solution:
     def hasIncreasingSubarrays(self, nums: List[int], k: int) -> bool:
+        # sliding window + dp
         n = len(nums)
-        for i in range(2 * k - 1, n):
-            yes = True
+        dp = [1] * n
 
-            for j in range(i - 1, i - k, -1):
+        l = 0
+        for r in range(1, n):
+            if nums[r] <= nums[r - 1]:
+                l = r
+                continue
 
-                if nums[j] >= nums[j + 1]:
-                    yes = False
-                    break
+            dp[r] = r - l + 1
 
-            for j in range(i - k - 1, i - 2 * k, -1):
+        for i in range(k, n):
+            if dp[i] >= k:
+                if dp[i - k] >= k:
+                    return True
 
-                if nums[j] >= nums[j + 1]:
-                    yes = False
-                    break
-
-            if yes:
-
-                return True
 
         return False
+
