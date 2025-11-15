@@ -1,0 +1,104 @@
+class Solution:
+    def numberOfSubstrings(self, s: str) -> int:
+        """
+N = the length of the entire input string s.
+L = the length of a substring we are considering.
+o = the number of ones in that substring.
+z = the number of zeros in that substring.
+
+o >= z²
+L = o + z
+substitute o = L - z into our dominant ones condition:
+L - z >= z² 
+L >= z² + z
+For any substring to possibly be "dominant," its length (L) must be at least z² + z
+
+the absolute maximum length any substring can have? It can't be longer than the original string, s. So, for any substring:
+L <= N
+combine our two inequalities:
+N >= L >= z² + z
+N >= z² + z
+Since z is a non-negative count, z² + z is always slightly larger than z². This means:
+N > z²
+sqrt(N) > z
+
+
+
+
+        """
+        n = len(s)
+        result = 0
+
+        # PART 1: Handle the case with 0 zeros (z = 0).
+        # Condition: ones >= 0*0 => ones >= 0. This is always true for any non-empty
+        # string of ones. We can count these efficiently in O(N).
+        # A block of k consecutive '1's contains k*(k+1)/2 substrings.
+        consecutive_ones = 0
+        for char in s:
+            if char == '1':
+                consecutive_ones += 1
+            else:
+                # The block of ones is broken by a '0'. Add its substrings to the result.
+                result += consecutive_ones * (consecutive_ones + 1) // 2
+                consecutive_ones = 0
+        # Add the count for the last block of ones if the string ends with '1's.
+        result += consecutive_ones * (consecutive_ones + 1) // 2
+
+        # PART 2: Handle cases with z > 0 zeros, using the sqrt(N) insight.
+        # We know that for a dominant substring, z < sqrt(N).
+        # Let Z_MAX be the maximum number of zeros we need to check.
+        Z_MAX = int(math.sqrt(n))
+
+        # This list will store the indices of zeros we have seen so far.
+        # Prepending -1 simplifies boundary calculations.
+        # For a substring starting at index 0, the "previous" zero is at -1.
+        zeros_seen_indices = [-1]
+
+        # Iterate through the string, with `j` as the ENDPOINT of our substrings.
+        for j in range(n):
+            if s[j] == '0':
+                zeros_seen_indices.append(j)
+
+            # `m` is the total number of zeros seen up to index `j`.
+            m = len(zeros_seen_indices) - 1
+            if m == 0:
+                continue # No zeros yet, already handled in PART 1.
+
+            # For our fixed endpoint `j`, let's check for valid substrings
+            # ending at `j` with `k` zeros, where k is from 1 up to Z_MAX.
+            # We iterate `k` backwards for a minor optimization, but forwards also works.
+            for k in range(1, min(m, Z_MAX) + 1):
+                # We are looking for substrings s[i..j] that contain exactly k zeros.
+                
+                # The k-th most recent zero (the first zero in our group of k)
+                # is at index `zeros_seen_indices[m - k + 1]`.
+                # The substring's start `i` must be AT or BEFORE this zero.
+                # So, i <= zeros_seen_indices[m - k + 1].
+                upper_bound_i_by_position = zeros_seen_indices[m - k + 1]
+
+                # The zero *before* our group of k zeros is at `zeros_seen_indices[m - k]`.
+                # The substring's start `i` must be AFTER this zero.
+                # So, i >= zeros_seen_indices[m - k] + 1.
+                lower_bound_i = zeros_seen_indices[m - k] + 1
+                
+                # Now, apply the dominant one condition: ones >= k*k
+                # ones = (length of s[i..j]) - k = (j - i + 1) - k
+                # So, (j - i + 1) - k >= k*k
+                # Rearranging to find the constraint on `i`:
+                # j + 1 - k - k*k >= i
+                # So, i <= j + 1 - k - k*k
+                upper_bound_i_by_condition = j + 1 - k - (k * k)
+
+                # The start index `i` must satisfy both the position and condition constraints.
+                # The valid range for `i` is:
+                # [lower_bound_i,  min(upper_bound_i_by_position, upper_bound_i_by_condition)]
+                
+                final_upper_bound_i = min(upper_bound_i_by_position, upper_bound_i_by_condition)
+
+                # The number of valid start indices `i` is the length of this range.
+                count = final_upper_bound_i - lower_bound_i + 1
+                
+                if count > 0:
+                    result += count
+                    
+        return result
