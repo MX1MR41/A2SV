@@ -74,6 +74,41 @@ class Solution:
 
 
 
+
+
+
+
+class Solution:
+    def countPalindromicSubsequence(self, s: str) -> int:
+        prefix = []
+        curr = 0
+        for i in s:
+            prefix.append(curr)
+            curr |= 1 << (ord(i) - ord('a'))
+
+        suffix = []
+        curr = 0
+        for i in s[::-1]:
+            suffix.append(curr)
+            curr |= 1 << (ord(i) - ord('a'))
+
+        suffix.reverse()
+
+        per_letter = [0 for _ in range(26)]
+
+        for i in range(1, len(s) - 1):
+            pre = prefix[i]
+            suf = suffix[i]
+            for j in range(26):
+                if (pre & (1 << j)) and (suf & (1 << j)):
+                    per_letter[ord(s[i]) - ord('a')] |= 1 << j
+
+        return sum(letter.bit_count() for letter in per_letter)
+
+        
+
+
+
         
 
 
