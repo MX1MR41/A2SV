@@ -3,7 +3,7 @@ class Solution:
         self.sieve = [True] * (30)
         self.sieve[0] = self.sieve[1] = False
         for i in range(2, 30):
-            m = 2
+            m = i
             while i * m < 30:
                 self.sieve[i * m] = False
                 m += 1
