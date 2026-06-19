@@ -82,7 +82,7 @@ class Lifter:
                     # and by the time we compute for i, we would have already computed for all upto i - 1
                     for i in range(1, floor(log2(dep)) + 1):
 
-                        half = 2**(i - 1) # same as 2**(i - 1)//2
+                        half = 2**(i - 1) # same as 2**i//2
 
                         half_ancestor = self.ancestor[u][half]
 
