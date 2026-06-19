@@ -170,3 +170,151 @@ class Solution:
             res.append(w)
 
         return res
+
+
+
+
+
+
+
+
+
+# UnionFind + dp + bfs + dfs
+# The hardest part of this problem is still finding the LCA of any two nodes efficiently
+# We can use Tarjan's offline LCA algorithm 
+# This algorithm depends on all the queries being known beforehand, and compute the LCA of each query
+# in one DFS, hence offline (unlike binary lifting which does online computation as queries come on the fly)
+# This algorithm exploits the nature of DFS, more specifically the post-traversal kind. 
+# During DFS, we explore a tree branch by branch. It naturally follows that for two nodes located in
+# different branches their LCA will be where those branches are rooted at. 
+# To reach some node v in a branch, we must've came down the tree, came down the LCA root to 
+# a previous branch, finsihed exploring that branch, then went back up to the LCA,
+# then went down the new/other current branch to node v. If there was a query for v and some other node u
+# located in a previous branch, then the answer would be the sub-tree's root which is still being explored
+# so we somehow need to associate the nodes of the previously explored branch to that sub-tree root.
+# We could do that by using UnionFind: once we finsihed exploring that branch, we union it with that sub-root
+# and we can make the (dsu) root of that group to be that sub-root. Then when we are at node v and want to 
+# query it with u, we just need to find the dsu root of u, which we assigned the sub-root as.
+# So in essence, we union branches to a sub-root when we finish exploring the branches so that for other nodes
+# in other branches we can easily find the root of the divergent branches.
+# The unionfind will weight the root by the least depth (instead of most rank or most size) so that dsu groups
+# will be rooted at sub-roots
+
+
+MOD = 10**9 + 7
+n = 10**5
+
+ways = [0 for _ in range(n + 1)]
+ways[1] = 1
+for i in range(2, n + 1):
+    ways[i] = (2 * ways[i - 1]) % MOD
+
+
+class UnionFind:
+    def __init__(self, depth):
+        self.root = {}
+        self.depth = depth
+
+    def find(self, x):
+        if x not in self.root:
+            self.root[x] = x
+
+        while x != self.root[x]:
+            self.root[x] = self.root[self.root[x]]
+            x = self.root[x]
+
+        return self.root[x]
+
+    def union(self, u, v):
+        rootu = self.find(u)
+        rootv = self.find(v)
+
+        if rootu == rootv:
+            return
+
+        du = self.depth[rootu]
+        dv = self.depth[rootv]
+
+        # make the ancestor the root
+        if du <= dv:
+            self.root[rootv] = rootu
+        else:
+            self.root[rootu] = rootv
+
+
+class Solution:
+    def assignEdgeWeights(self, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
+
+        graph = defaultdict(list)
+        depth = defaultdict(int)
+
+        for u, v in edges:
+            graph[u].append(v)
+            graph[v].append(u)
+
+        que = deque([1])
+        seen = set([1])
+        d = 0
+
+        while que:
+            for _ in range(len(que)):
+                u = que.popleft()
+
+                depth[u] = d
+
+                for v in graph[u]:
+                    if v not in seen:
+                        seen.add(v)
+                        que.append(v)
+
+            d += 1
+
+        dsu = UnionFind(depth)
+
+        LCAS = [None for _ in range(len(queries))]
+
+        qs = [(ind, u, v) for ind, (u, v) in enumerate(queries)]
+        qmap = defaultdict(list)
+        for ind, u, v in qs:
+            qmap[u].append((v, ind))
+            qmap[v].append((u, ind))
+
+
+        seen = set()
+
+
+        def dfs(u):
+
+            seen.add(u)
+
+            # go over queries that have have u in them and find their LCA
+            for v, ind in qmap[u]:
+                if v not in seen:
+                    continue
+
+                LCA = dsu.find(v)
+                LCAS[ind] = LCA
+
+            # go down the branches
+            for v in graph[u]:
+                if v in seen:
+                    continue
+
+                dfs(v)
+                
+                # union once we finsihed exploring the branch and returned from exploring it
+                dsu.union(u, v)
+
+
+        dfs(1)
+
+        res = []
+        for ind, (u, v) in enumerate(queries):
+            LCA = LCAS[ind]
+
+            dist = depth[u] + depth[v] - 2 * depth[LCA]
+
+            w = ways[dist]
+            res.append(w)
+
+        return res
