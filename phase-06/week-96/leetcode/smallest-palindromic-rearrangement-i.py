@@ -1,6 +1,6 @@
 class Solution:
     def smallestPalindrome(self, s: str) -> str:
-        # heao
+        # heap
         cnt = Counter(s)
         multi = []
         single = []
