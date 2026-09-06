@@ -2,18 +2,19 @@ class Solution:
     def numDistinct(self, s: str, t: str) -> int:
         # dp
         # dp[s_index][t_index] = number of t[0...t_index] subs that can be formed
-        # upto s_index
+        # upto s_index.
+        # it can be simplified by only storing dp[i - 1], the previous state, only
 
         n = len(s)
         m = len(t)
-        dp = [[0 for _ in range(m)] for _ in range(n)]
+        dp = [0 for _ in range(m)]
 
         if s[0] == t[0]:
-            dp[0][0] = 1
+            dp[0] = 1
 
         for i in range(1, n):
-            prev = dp[i - 1]
-            curr = dp[i]
+            prev = dp
+            curr = [0 for _ in range(m)]
 
             for j in range(m):
                 if s[i] != t[j]:
@@ -30,4 +31,6 @@ class Solution:
             for j in range(m):
                 curr[j] += prev[j]
 
-        return dp[-1][-1]
+            dp = curr
+
+        return dp[-1]
