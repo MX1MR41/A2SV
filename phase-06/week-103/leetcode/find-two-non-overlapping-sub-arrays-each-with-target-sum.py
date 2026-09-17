@@ -1,7 +1,6 @@
 class Solution:
     def minSumOfLengths(self, arr: List[int], target: int) -> int:
         # prefix sum + dp
-        nums = arr
         n = len(arr)
         min_len = [float("inf") for _ in range(n)]
         last_ind = defaultdict(int)
@@ -11,7 +10,7 @@ class Solution:
 
         pre = 0
         for i in range(n):
-            num = nums[i]
+            num = arr[i]
             pre += num
             deduct = pre - target
             if deduct in last_ind:
